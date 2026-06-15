@@ -154,8 +154,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       { id: 'egitim-girisi' as View, label: 'Eğitim Girişi' },
       { id: 'raporlar' as View, label: 'Raporlar' },
       { id: 'analitik' as View, label: 'Veri Analitiği' },
-      { id: 'uyari' as View, label: 'Uyarılar Takvimi' },
     ]},
+    { id: 'uyari' as View, label: 'Uyarılar Takvimi', icon: Bell },
     { id: 'egitim' as View, label: 'Eğitim & Gelişim (LMS)', icon: GraduationCap, children: [
       { id: 'egitim' as View, label: 'Eğitim Kataloğu & LMS' },
       { id: 'yetkinlik' as View, label: 'Yetkinlik Matrisi' },

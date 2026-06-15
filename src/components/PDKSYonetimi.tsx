@@ -255,7 +255,7 @@ const PDKSYonetimi: React.FC<PDKSYonetimiProps> = ({
   employees,
   izinTalepleri = [],
 }) => {
-  const { profile, appRole } = useAuth();
+  const { user, profile, appRole } = useAuth();
   const isAdmin = appRole === 'superadmin' || appRole === 'admin' || appRole === 'hr' || appRole === 'manager';
   
   const [loading, setLoading] = useState(true);

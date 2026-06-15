@@ -60,7 +60,7 @@ const durumLabel = (d: string) => {
   return map[d] ?? { text: d, cls: 'bg-gray-100 text-gray-600' };
 };
 
-// ������ �!alı�xma süresi hesaplama ��������������������������������������������������������������������������������������������������
+//  !alıxma süresi hesaplama 
 function calismaSuresi(joinDate?: string): string {
   if (!joinDate) return '-';
   const start = new Date(joinDate);
@@ -77,7 +77,7 @@ function calismaSuresi(joinDate?: string): string {
   return parts.join(' ') || '-';
 }
 
-// ������ Dosya satırı bile�xeni ����������������������������������������������������������������������������������������������������������
+//  Dosya satırı bilexeni 
 interface DosyaSatiriProps {
   dosya: OzlukDosya;
   onDelete: (dosya: OzlukDosya) => void;
@@ -118,7 +118,7 @@ const DosyaSatiri: React.FC<DosyaSatiriProps> = ({ dosya, onDelete, onDownload }
   </div>
 );
 
-// ������ Ana bile�xen ������������������������������������������������������������������������������������������������������������������������������
+//  Ana bilexen 
 
 interface OzlukDosyasiProps {
   employees: Employee[];
@@ -144,7 +144,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
   const effectiveCompanyId = profile?.company_id ?? DEMO_COMPANY_ID;
   const storageEnabled = import.meta.env.VITE_SUPABASE_STORAGE_ENABLED !== 'false';
 
-  // �~irkete göre filtrele
+  // ~irkete göre filtrele
   const companyEmployees = employees.filter(
     (e) => !profile?.company_id || e.company_id === profile.company_id
   );
@@ -164,7 +164,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
   const [gorevTanimlari, setGorevTanimlari] = useState<GorevTanimi[]>([]);
   const [gorevTanimiLoading, setGorevTanimiLoading] = useState(false);
 
-  // Tutanak / �Şikayet yazı ekleme
+  // Tutanak / Şikayet yazı ekleme
   const [yeniYazi, setYeniYazi] = useState<Record<string, string>>({});
   const [yaziKaydediliyor, setYaziKaydediliyor] = useState<Record<string, boolean>>({});
 
@@ -226,7 +226,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
       .finally(() => setDosyaLoading(false));
   }, [selectedEmpId]);
 
-  // Yedekleme do�xrulama
+  // Yedekleme doxrulama
   const handleBackupVerify = async (passcode: string): Promise<boolean> => {
     if (!selectedEmp) return false;
     const stored = selectedEmp.approval_passcode;
@@ -285,7 +285,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
       a.target = '_blank';
       a.click();
     } catch (err: any) {
-      alert(`İndirme ba�xlatılamadı: ${err?.message ?? 'Bilinmeyen hata'}`);
+      alert(`İndirme baxlatılamadı: ${err?.message ?? 'Bilinmeyen hata'}`);
     }
   };
 
@@ -300,7 +300,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
     }
   };
 
-  // Yazı kaydet (tutanak/�şikayet)
+  // Yazı kaydet (tutanak/şikayet)
   const handleSaveYazi = async (kategori: string) => {
     const metin = yeniYazi[kategori]?.trim();
     if (!metin || !selectedEmp) return;
@@ -322,7 +322,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
     }
   };
 
-  // Yedekleme i�xlemi (do�xrudan ça�xrılır, �xifre kontrolü handleBackupVerify'da)
+  // Yedekleme ixlemi (doxrudan çaxrılır, xifre kontrolü handleBackupVerify'da)
   const performBackup = () => {
     if (!selectedEmp) return;
 
@@ -464,18 +464,19 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
     ? 'Supabase baglantisi kurulamadi. Local calisiyorsaniz `npm run supabase:status` ile servisin ayakta oldugunu kontrol edin ve frontend sunucusunu yeniden baslatin.'
     : null;
 
-  // ���� Render ������������������������������������������������������������������������������������������������������������������������������������
+  //  Render 
 
   return (
     <div className="space-y-6">
-      {/* Ba�xlık */}
+      {/* Baxlık */}
+      {/* Başlık */}
       <div className="flex items-center gap-3">
         <div className="p-2 bg-blue-100 rounded-xl">
           <FolderOpen className="w-6 h-6 text-blue-600" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">�!alı�xan �zlük Dosyası</h1>
-          <p className="text-sm text-gray-500">Personel belgeleri, izin geçmi�xi ve bordro özeti</p>
+          <h1 className="text-xl font-bold text-gray-900">Çalışan Özlük Dosyası</h1>
+          <p className="text-sm text-gray-500">Personel belgeleri, izin geçmişi ve bordro özeti</p>
         </div>
       </div>
 
@@ -492,11 +493,11 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
               }}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 pr-9 text-sm bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">� Personel seçin �</option>
+              <option value="">  Personel seçin  </option>
               {companyEmployees.map((emp) => (
                 <option key={emp.id} value={emp.id}>
                   {emp.name}
-                  {emp.department ? ` � ${emp.department}` : ''}
+                  {emp.department ? `   ${emp.department}` : ''}
                 </option>
               ))}
             </select>
@@ -521,12 +522,12 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 if (selectedEmp?.approval_passcode) {
                   setShowBackupModal(true);
                 } else {
-                  // �Şifre tanımlı de�xil, direkt yedekle
+                  // Şifre tanımlı değil, direkt yedekle
                   performBackup();
                 }
               }}
               className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 active:scale-95 transition-all shadow-sm"
-              title="�zlük dosyasını yerel depoya yedekle"
+              title="Özlük dosyasını yerel depoya yedekle"
             >
               <Download className="w-4 h-4" />
               Yedekle
@@ -574,7 +575,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
           onClose={() => setShowBackupModal(false)}
           onVerify={handleBackupVerify}
           employeeName={selectedEmp.name}
-          title="�zlük Dosyası Yedekleme"
+          title="Özlük Dosyası Yedekleme"
           actionLabel="Yedekle"
           actionDescription="Personelin tüm özlük bilgileri (belgeler, bordro, izin, görev tanımı, tutanaklar) yerel depolamaya kaydedilecek."
           actionColor="indigo"
@@ -590,11 +591,11 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
               <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mb-6">
                 <Lock className="w-10 h-10 text-rose-600" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">�zlük Dosyası Kilitli</h3>
+              <h3 className="text-2xl font-bold text-slate-800 mb-3">Özlük Dosyası Kilitli</h3>
               <p className="text-slate-500 max-w-lg leading-relaxed">
-                Bu personelin hassas bilgilerine (�zlük, Bordro, Belgeler vb.) eri�xmek için lütfen ekranın üst kısmındaki <strong>Personel Kartından</strong> (veya kartı büyüterek) 
+                Bu personelin hassas bilgilerine (Özlük, Bordro, Belgeler vb.) erişmek için lütfen ekranın üst kısmındaki <strong>Personel Kartından</strong> (veya kartı büyüterek) 
                 <span className="bg-slate-800 text-white px-2 py-1 rounded text-xs mx-1 font-bold">Bordro & Talepler</span> 
-                butonuna tıklayıp �şifreyi girin veya QR kodu okutun.
+                butonuna tıklayıp şifreyi girin veya QR kodu okutun.
               </p>
             </div>
           ) : (
@@ -617,7 +618,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
             </div>
 
             <div className="p-5">
-              {/* ���� Genel Bilgiler ������������������������������������������������������ */}
+              {/*  Genel Bilgiler  */}
               {activeTab === 'genel' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <InfoSatiri icon={User} label="Ad Soyad" value={selectedEmp.name} />
@@ -627,7 +628,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                   <InfoSatiri icon={Briefcase} label="Pozisyon / Unvan" value={selectedEmp.position || '-'} />
                   <InfoSatiri
                     icon={Calendar}
-                    label="İ�xe Giri�x Tarihi"
+                    label="İxe Girix Tarihi"
                     value={
                       selectedEmp.join_date
                         ? new Date(selectedEmp.join_date).toLocaleDateString('tr-TR')
@@ -636,7 +637,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                   />
                   <InfoSatiri
                     icon={Clock}
-                    label="�!alı�xma Süresi"
+                    label="!alıxma Süresi"
                     value={calismaSuresi(selectedEmp.join_date)}
                   />
                   <InfoSatiri icon={Phone} label="Telefon" value={selectedEmp.phone || '-'} />
@@ -661,7 +662,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 </div>
               )}
 
-              {/* ���� Belgeler ������������������������������������������������������������������ */}
+              {/*  Belgeler  */}
               {activeTab === 'belgeler' && (
                 <div className="space-y-4">
                   {storageKapaliMesaji && (
@@ -728,7 +729,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 </div>
               )}
 
-              {/* ���� Bordro �zeti ������������������������������������������������������������ */}
+              {/*  Bordro zeti  */}
               {activeTab === 'bordro' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -747,8 +748,8 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                         <thead className="bg-gray-50 border-b border-gray-200">
                           <tr>
                             <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">Dönem</th>
-                            <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500">Brüt �Ücret</th>
-                            <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500">Net �Ücret</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500">Brüt Ücret</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500">Net Ücret</th>
                             <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500">Durum</th>
                           </tr>
                         </thead>
@@ -759,10 +760,10 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                             <tr key={b.id} className="hover:bg-gray-50 transition-colors">
                               <td className="px-4 py-2.5 font-medium text-gray-800">{b.period}</td>
                               <td className="px-4 py-2.5 text-right text-gray-700">
-                                ��{Number(b.brut_maas).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                                {Number(b.brut_maas).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                               </td>
                               <td className="px-4 py-2.5 text-right font-semibold text-green-700">
-                                ��{Number(b.net_maas).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                                {Number(b.net_maas).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                               </td>
                               <td className="px-4 py-2.5 text-right">
                                 {approval ? (
@@ -791,7 +792,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 </div>
               )}
 
-              {/* ���� İzin Durumu �������������������������������������������������������������� */}
+              {/*  İzin Durumu  */}
               {activeTab === 'izin' && (
                 <div className="space-y-5">
                   {/* İzin hakları özeti */}
@@ -799,7 +800,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                     <IzinKartı label="Toplam Hak" value={`${empIzinHakki?.toplamHak ?? '-'} gün`} color="blue" />
                     <IzinKartı label="Kullanılan" value={`${empIzinHakki?.kullanilanIzin ?? 0} gün`} color="amber" />
                     <IzinKartı label="Kalan" value={`${empIzinHakki?.kalanIzin ?? 0} gün`} color="green" />
-                    <IzinKartı label="�!alı�xma Yılı" value={`${empIzinHakki?.calismaYili ?? '-'} yıl`} color="purple" />
+                    <IzinKartı label="!alıxma Yılı" value={`${empIzinHakki?.calismaYili ?? '-'} yıl`} color="purple" />
                   </div>
 
                   {/* İzin talepleri tablosu */}
@@ -818,8 +819,8 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                           <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
                               <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">İzin Türü</th>
-                              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">Ba�xlangıç</th>
-                              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">Biti�x</th>
+                              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">Baxlangıç</th>
+                              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500">Bitix</th>
                               <th className="px-4 py-2.5 text-center text-xs font-semibold text-gray-500">Gün</th>
                               <th className="px-4 py-2.5 text-center text-xs font-semibold text-gray-500">Durum</th>
                             </tr>
@@ -855,7 +856,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 </div>
               )}
 
-              {/* ���� Görev Tanımı �������������������������������������������������������������� */}
+              {/*  Görev Tanımı  */}
               {activeTab === 'gorev-tanimi' && (
                 <div className="space-y-4">
                   {gorevTanimiLoading ? (
@@ -865,12 +866,12 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                   ) : gorevTanimlari.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-gray-200 p-10 text-center">
                       <ClipboardList className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-                      <p className="text-sm text-gray-400">Bu personel için onaylanmı�x görev tanımı bulunamadı</p>
+                      <p className="text-sm text-gray-400">Bu personel için onaylanmıx görev tanımı bulunamadı</p>
                     </div>
                   ) : (
                     gorevTanimlari.map((g) => (
                       <div key={g.id} className="rounded-xl border border-green-200 bg-green-50 p-4 space-y-4">
-                        {/* Ba�xlık */}
+                        {/* Baxlık */}
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="flex items-center gap-2">
@@ -879,7 +880,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                             </div>
                             <p className="text-xs text-gray-500 mt-0.5 ml-6">
                               {g.is_birimi && <span className="mr-2">{g.is_birimi}</span>}
-                              {g.bagli_oldugu_pozisyon && <span>Ba�xlı: {g.bagli_oldugu_pozisyon}</span>}
+                              {g.bagli_oldugu_pozisyon && <span>Baxlı: {g.bagli_oldugu_pozisyon}</span>}
                             </p>
                           </div>
                           <div className="shrink-0 text-right">
@@ -944,7 +945,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
 
                           {g.calismalar?.length > 0 && (
                             <div className="bg-white rounded-lg border border-green-100 p-3">
-                              <p className="text-xs font-semibold text-gray-600 mb-2">�!alı�xmalar</p>
+                              <p className="text-xs font-semibold text-gray-600 mb-2">!alıxmalar</p>
                               <ul className="space-y-1">
                                 {g.calismalar.map((c, i) => (
                                   <li key={i} className="text-sm text-gray-700 flex gap-2">
@@ -961,7 +962,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 </div>
               )}
 
-              {/* ���� Tutanaklar ������������������������������������������������������������������ */}
+              {/*  Tutanaklar  */}
               {activeTab === 'tutanaklar' && (
                 <TutanakSikayetPanel
                   kategori="tutanak"
@@ -981,12 +982,12 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
                 />
               )}
 
-              {/* ���� �Şikayetler ������������������������������������������������������������������ */}
+              {/*    Şikayetler                                   */}
               {activeTab === 'sikayetler' && (
                 <TutanakSikayetPanel
                   kategori="sikayet"
-                  baslik="�Şikayetler"
-                  aciklama="�!alı�xana yapılan �şikayet bildirimleri ve ilgili belgeler"
+                  baslik="Şikayetler"
+                  aciklama="Çalışana yapılan şikayet bildirimleri ve ilgili belgeler"
                   dosyalar={dosyaByKategori('sikayet')}
                   yeniYazi={yeniYazi['sikayet'] ?? ''}
                   kaydediliyor={yaziKaydediliyor['sikayet'] ?? false}
@@ -1020,7 +1021,7 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
   );
 };
 
-// ������ Yardımcı bile�xenler ��������������������������������������������������������������������������������������������������������������
+//  Yardımcı bilexenler 
 
 const InfoSatiri: React.FC<{
   icon: React.ComponentType<{ className?: string }>;
