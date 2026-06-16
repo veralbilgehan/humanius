@@ -345,6 +345,16 @@ const AppInner: React.FC = () => {
     if (user && profile) loadData();
   }, [user, profile, loadData]);
 
+  // Auto-open pending bordro for employee view
+  useEffect(() => {
+    if (currentView === 'bordro' && ['employee', 'user'].includes(effectiveAppRole)) {
+      const pendingBordro = bordrolar.find(b => b.approval_status === 'beklemede');
+      if (pendingBordro && (!selectedBordro || selectedBordro.id !== pendingBordro.id)) {
+        setSelectedBordro(pendingBordro);
+      }
+    }
+  }, [currentView, effectiveAppRole, bordrolar]);
+
   // ── Filtered lists ──────────────────────────────────────────────────────────
   const filteredEmployees = employees.filter((emp) => {
     const safeName = String(emp.name ?? '').toLowerCase();
@@ -713,8 +723,18 @@ const AppInner: React.FC = () => {
     setSelectedBordro(bordro);
   };
 
-  const handleSendBordroForApproval = (bordro: BordroItem) => {
-    setSelectedBordro(bordro);
+  const handleSendBordroForApproval = async (bordro: BordroItem) => {
+    const confirmSend = window.confirm(`${bordro.period} dönemi bordrosunu personelin onayına göndermek istediğinize emin misiniz?`);
+    if (confirmSend) {
+      try {
+        await bordroService.updateApprovalStatus(bordro.id, 'beklemede');
+        await loadData();
+        alert('Bordro başarıyla personelin onayına gönderildi.');
+      } catch (err: any) {
+        console.error('Bordro onaya gönderilemedi:', err);
+        alert(`Onaya gönderme işlemi başarısız oldu!\nDetay: ${err.message}`);
+      }
+    }
   };
 
   const handleDeleteBordro = async (id: string) => {
@@ -839,33 +859,15 @@ const AppInner: React.FC = () => {
         {currentView === 'bordro' && (
           ['employee', 'user'].includes(effectiveAppRole) ? (
             <div className="space-y-6">
-              {bordrolar.some(b => b.onay_durumu === 'beklemede') ? (
-                <div className="space-y-6">
-                  {bordrolar.filter(b => b.onay_durumu === 'beklemede').map(pendingBordro => (
-                    <div key={pendingBordro.id} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                      <h2 className="text-xl font-bold text-gray-800 mb-4">Bekleyen Bordro Onayı</h2>
-                      <BordroOnay
-                        bordro={pendingBordro}
-                        employeeId={currentEmployeeMatch?.id || ''}
-                        employeeName={profile?.full_name || ''}
-                        onApprovalComplete={() => {
-                          loadData();
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <BordroList
-                  bordrolar={bordrolar}
-                  onView={handleViewBordro}
-                  isEmployeeView={true}
-                  onEdit={() => {}}
-                  onDelete={() => {}}
-                  onImport={() => {}}
-                  onSendForApproval={() => {}}
-                />
-              )}
+              <BordroList
+                bordrolar={bordrolar}
+                onView={setSelectedBordro}
+                isEmployeeView={true}
+                onEdit={() => {}}
+                onDelete={() => {}}
+                onImport={() => {}}
+                onSendForApproval={() => {}}
+              />
             </div>
           ) : (
             <BordroMain
@@ -1156,6 +1158,7 @@ const AppInner: React.FC = () => {
           }
           onClose={() => setSelectedBordro(null)}
           onApprovalComplete={loadData}
+          isEmployeeView={['employee', 'user'].includes(effectiveAppRole)}
         />
       )}
     </div>

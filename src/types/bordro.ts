@@ -51,6 +51,8 @@ export interface BordroItem {
   aciklama: string;
   created_at: string;
   updated_at: string;
+  approval_status?: 'beklemede' | 'onaylandi' | 'reddedildi' | null;
+  approval_date?: string | null;
   // joined relation
   employees?: { name: string; department: string; tc_no?: string; sicil_no?: string };
 }

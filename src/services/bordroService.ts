@@ -100,6 +100,15 @@ export const bordroService = {
     if (error) throw error;
   },
 
+  async updateApprovalStatus(id: string, status: 'beklemede' | 'onaylandi' | 'reddedildi') {
+    const { error } = await supabase
+      .from('bordro_items')
+      .update({ approval_status: status })
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+
   async getYillikBordrolar(companyId: string, employeeId: string, yil: number) {
     const { data, error } = await supabase
       .from('bordro_items')

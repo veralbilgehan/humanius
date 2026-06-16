@@ -11,6 +11,7 @@ interface BordroViewModalProps {
   employeeName: string;
   onClose: () => void;
   onApprovalComplete?: () => void;
+  isEmployeeView?: boolean;
 }
 
 const BordroViewModal: React.FC<BordroViewModalProps> = ({
@@ -18,9 +19,10 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
   employeeId,
   employeeName,
   onClose,
-  onApprovalComplete
+  onApprovalComplete,
+  isEmployeeView = false
 }) => {
-  const [approvalStatus, setApprovalStatus] = useState<'beklemede' | 'onaylandi' | 'reddedildi'>('beklemede');
+  const [approvalStatus, setApprovalStatus] = useState<'beklemede' | 'onaylandi' | 'reddedildi' | 'taslak'>('taslak');
   const [approvalDetails, setApprovalDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,7 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
         setApprovalStatus(latestApproval.approval_status as any);
         setApprovalDetails(latestApproval);
       } else {
-        setApprovalStatus('beklemede');
+        setApprovalStatus(bordro.approval_status || 'taslak');
         setApprovalDetails(null);
       }
     } catch (error) {
@@ -80,11 +82,19 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
             Reddedildi
           </span>
         );
-      default:
+      case 'beklemede':
         return (
           <span className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-medium">
             <Clock className="w-4 h-4" />
             Onay Bekliyor
+          </span>
+        );
+      case 'taslak':
+      default:
+        return (
+          <span className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
+            <FileText className="w-4 h-4" />
+            Taslak (Onaya Gönderilmedi)
           </span>
         );
     }
@@ -340,13 +350,21 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
             </div>
           </div>
 
-          {approvalStatus === 'beklemede' && !loading && (
+          {approvalStatus === 'beklemede' && !loading && isEmployeeView && (
             <BordroOnay
               bordro={bordro}
               employeeId={employeeId}
               employeeName={employeeName}
               onApprovalComplete={handleApprovalComplete}
             />
+          )}
+          
+          {approvalStatus === 'beklemede' && !loading && !isEmployeeView && (
+            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl text-center">
+              <Clock className="w-6 h-6 text-yellow-600 mx-auto mb-2" />
+              <h3 className="text-sm font-semibold text-yellow-800">Personel Onayı Bekleniyor</h3>
+              <p className="text-xs text-yellow-700 mt-1">Bu bordro personelin onayına gönderilmiştir. Personel onayladıktan sonra durumu güncellenecektir.</p>
+            </div>
           )}
         </div>
       </div>
