@@ -361,23 +361,27 @@ const AppInner: React.FC = () => {
     return matchSearch && matchDept;
   });
 
-  const currentEmployeeForIzin = employees.find((emp) => {
-    const profileEmail = String(profile?.email ?? '').toLowerCase();
-    const empEmail = String(emp.email ?? '').toLowerCase();
+  const currentEmployeeMatch = employees.find((emp) => {
+    const profileEmail = String(profile?.email ?? '').trim().toLowerCase();
+    const empEmail = String(emp.email ?? '').trim().toLowerCase();
     if (profileEmail && empEmail && profileEmail === empEmail) return true;
 
     const profileName = String(profile?.full_name ?? '').trim().toLowerCase();
     const empName = String(emp.name ?? '').trim().toLowerCase();
-    return profileName.length > 0 && profileName === empName;
+    if (profileName.length > 0 && profileName === empName) return true;
+    
+    const normalizedProfileName = profileName.replace(/[\s-]/g, '');
+    const normalizedEmpName = empName.replace(/[\s-]/g, '');
+    return normalizedProfileName.length > 0 && normalizedProfileName === normalizedEmpName;
   });
 
-  const currentEmployeeIzinHakki = currentEmployeeForIzin
-    ? izinHaklari.find((hak) => hak.employeeId === currentEmployeeForIzin.id)
+  const currentEmployeeIzinHakki = currentEmployeeMatch
+    ? izinHaklari.find((hak) => hak.employeeId === currentEmployeeMatch.id)
     : undefined;
 
-  const currentEmployeeIzinTalepleri = currentEmployeeForIzin
+  const currentEmployeeIzinTalepleri = currentEmployeeMatch
     ? izinTalepleri
-        .filter((talep) => talep.employeeId === currentEmployeeForIzin.id)
+        .filter((talep) => talep.employeeId === currentEmployeeMatch.id)
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 3)
     : [];
@@ -835,15 +839,33 @@ const AppInner: React.FC = () => {
         {currentView === 'bordro' && (
           ['employee', 'user'].includes(effectiveAppRole) ? (
             <div className="space-y-6">
-              <BordroList
-                bordrolar={bordrolar}
-                onView={handleViewBordro}
-                isEmployeeView={true}
-                onEdit={() => {}}
-                onDelete={() => {}}
-                onImport={() => {}}
-                onSendForApproval={() => {}}
-              />
+              {bordrolar.some(b => b.onay_durumu === 'beklemede') ? (
+                <div className="space-y-6">
+                  {bordrolar.filter(b => b.onay_durumu === 'beklemede').map(pendingBordro => (
+                    <div key={pendingBordro.id} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                      <h2 className="text-xl font-bold text-gray-800 mb-4">Bekleyen Bordro Onayı</h2>
+                      <BordroOnay
+                        bordro={pendingBordro}
+                        employeeId={currentEmployeeMatch?.id || ''}
+                        employeeName={profile?.full_name || ''}
+                        onApprovalComplete={() => {
+                          loadData();
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <BordroList
+                  bordrolar={bordrolar}
+                  onView={handleViewBordro}
+                  isEmployeeView={true}
+                  onEdit={() => {}}
+                  onDelete={() => {}}
+                  onImport={() => {}}
+                  onSendForApproval={() => {}}
+                />
+              )}
             </div>
           ) : (
             <BordroMain
@@ -882,8 +904,8 @@ const AppInner: React.FC = () => {
                   <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Aktif Kullanıcı İzin Özeti</p>
                   <h3 className="mt-1 text-lg font-bold text-indigo-900">{profile?.full_name || 'Kullanıcı'}</h3>
                   <p className="mt-1 text-sm text-indigo-800">
-                    {currentEmployeeForIzin
-                      ? `${currentEmployeeForIzin.department || 'Departman belirtilmedi'} • ${currentEmployeeForIzin.position || 'Pozisyon belirtilmedi'}`
+                    {currentEmployeeMatch
+                      ? `${currentEmployeeMatch.department || 'Departman belirtilmedi'} • ${currentEmployeeMatch.position || 'Pozisyon belirtilmedi'}`
                       : 'Personel kaydı eşleşmedi'}
                   </p>
                 </div>
