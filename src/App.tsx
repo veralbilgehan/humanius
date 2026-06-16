@@ -330,7 +330,7 @@ const AppInner: React.FC = () => {
       try {
         let bordroData = await bordroService.getAll(profile.company_id) ?? [];
         if (isEmployeeRole && currentUserEmpId) {
-          bordroData = bordroData.filter(b => b.employee_id === currentUserEmpId);
+          bordroData = bordroData.filter(b => b.employee_id === currentUserEmpId && b.approval_status !== 'taslak' && b.approval_status != null);
         } else if (isEmployeeRole && !currentUserEmpId) {
           bordroData = [];
         }
@@ -345,15 +345,7 @@ const AppInner: React.FC = () => {
     if (user && profile) loadData();
   }, [user, profile, loadData]);
 
-  // Auto-open pending bordro for employee view
-  useEffect(() => {
-    if (currentView === 'bordro' && ['employee', 'user'].includes(effectiveAppRole)) {
-      const pendingBordro = bordrolar.find(b => b.approval_status === 'beklemede');
-      if (pendingBordro && (!selectedBordro || selectedBordro.id !== pendingBordro.id)) {
-        setSelectedBordro(pendingBordro);
-      }
-    }
-  }, [currentView, effectiveAppRole, bordrolar]);
+  // Removed auto-open effect as we now have explicit cards
 
   // ── Filtered lists ──────────────────────────────────────────────────────────
   const filteredEmployees = employees.filter((emp) => {
@@ -859,8 +851,23 @@ const AppInner: React.FC = () => {
         {currentView === 'bordro' && (
           ['employee', 'user'].includes(effectiveAppRole) ? (
             <div className="space-y-6">
+              {bordrolar.filter(b => b.approval_status === 'beklemede').map(pendingBordro => (
+                <div key={pendingBordro.id} className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 shadow-sm flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold text-yellow-800">Onay Bekleyen Bordro</h3>
+                    <p className="text-sm text-yellow-700">{pendingBordro.period} dönemi bordronuz onayınızı bekliyor.</p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedBordro(pendingBordro)}
+                    className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors"
+                  >
+                    Görüntüle ve Onayla
+                  </button>
+                </div>
+              ))}
+              
               <BordroList
-                bordrolar={bordrolar}
+                bordrolar={bordrolar.filter(b => b.approval_status === 'onaylandi')}
                 onView={setSelectedBordro}
                 isEmployeeView={true}
                 onEdit={() => {}}
