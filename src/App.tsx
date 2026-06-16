@@ -209,7 +209,11 @@ const AppInner: React.FC = () => {
           if (profileEmail && empEmail && profileEmail === empEmail) return true;
           const profileName = String(profile?.full_name ?? '').trim().toLocaleLowerCase('tr-TR');
           const empName = String(emp.name ?? '').trim().toLocaleLowerCase('tr-TR');
-          return profileName.length > 0 && profileName === empName;
+          if (profileName.length > 0 && profileName === empName) return true;
+          
+          const normalizedProfileName = profileName.replace(/[\s-]/g, '');
+          const normalizedEmpName = empName.replace(/[\s-]/g, '');
+          return normalizedProfileName.length > 0 && normalizedProfileName === normalizedEmpName;
         });
         if (currentUserEmp) {
           filteredMapped = [currentUserEmp];
@@ -851,7 +855,11 @@ const AppInner: React.FC = () => {
         {currentView === 'bordro' && (
           ['employee', 'user'].includes(effectiveAppRole) ? (
             <div className="space-y-6">
-              {bordrolar.filter(b => b.approval_status === 'beklemede').map(pendingBordro => (
+              {bordrolar
+                .filter(b => b.approval_status === 'beklemede')
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                .slice(0, 1)
+                .map(pendingBordro => (
                 <div key={pendingBordro.id} className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 shadow-sm flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-bold text-yellow-800">Onay Bekleyen Bordro</h3>
