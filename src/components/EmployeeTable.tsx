@@ -170,13 +170,15 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => onEmployeeClick(employee)}
-                      className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title={t('table.edit')}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
+                    {appRole !== 'employee' && appRole !== 'user' && (
+                        <button
+                          onClick={() => onEmployeeClick(employee)}
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title={t('table.edit')}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      )}
                     <button
                       onClick={() => {
                         const csvContent = [

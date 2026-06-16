@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       { id: 'gorev-tanimi' as View, label: 'Görev Tanımı' },
     ]},
     { id: 'bordro' as View, label: 'BORDRO VE İCMAL', icon: CreditCard, children: [
-      { id: 'bordro' as View, label: 'Bordro Düzenleme' },
+      { id: 'bordro' as View, label: 'Bordro' },
       { id: 'yan-haklar' as View, label: 'Esnek Yan Haklar' },
       { id: 'bordro-icmal' as View, label: 'Bordro İcmal Raporu' },
     ]},

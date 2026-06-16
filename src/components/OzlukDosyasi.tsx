@@ -459,12 +459,12 @@ const OzlukDosyasi: React.FC<OzlukDosyasiProps> = ({
     : null;
 
   const ozlukSetupMesaji = ozlukSetupEksik
-    ? 'Ozlük dosyasi altyapisi bu Supabase projesinde henuz kurulmamis. `ozluk_dosyalari` tablosu, `ozluk-dosyalari` bucketi ve ilgili policyler olusturulmali.'
+    ? 'Özlük dosyası altyapısı bu Supabase projesinde henüz kurulmamış. Lütfen kurulum adımlarını tamamlayın.'
     : baglantiHatasi
-    ? 'Supabase baglantisi kurulamadi. Local calisiyorsaniz `npm run supabase:status` ile servisin ayakta oldugunu kontrol edin ve frontend sunucusunu yeniden baslatin.'
+    ? 'Bağlantı hatası: Sunucu ile iletişim kurulamadı. Lütfen internet bağlantınızı kontrol edin veya sayfayı yenileyin.'
     : null;
 
-  //  Render 
+  //    Render                                                                   
 
   return (
     <div className="space-y-6">

@@ -143,16 +143,6 @@ export const GlobalEmployeeHeader: React.FC<GlobalEmployeeHeaderProps> = ({
           </div>
         </div>
 
-        {/* İŞLEM YOLLARI (ALT BUTONLAR) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button className="bg-blue-50 text-blue-700 border border-blue-200 px-4 py-4 rounded-xl font-bold hover:bg-blue-100 transition-colors text-center text-sm md:text-base">
-            Yol A: Değişiklik Yap (İlk Seç)
-          </button>
-          <button className="bg-gray-50 text-gray-700 border border-gray-200 px-4 py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors text-center text-sm md:text-base">
-            Yol B: Evrak Üzerinden Yürü (7 Kişi)
-          </button>
-        </div>
-
       </div>
 
       {showAccessModal && (
