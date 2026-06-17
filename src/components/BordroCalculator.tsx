@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calculator, Save, FileText, Download, User, DollarSign, CheckCircle, Send } from 'lucide-react';
 import { BordroItem } from '../types/bordro';
 import { calculateBordro, formatCurrency, formatNumber } from '../utils/bordroCalculations';
@@ -241,150 +241,132 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
         <title>Bordro - ${calculatedBordro.employeeName} - ${calculatedBordro.period}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: Arial, sans-serif; padding: 40px; background: white; }
-          .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #2563eb; padding-bottom: 20px; }
-          .header h1 { color: #1e40af; font-size: 28px; margin-bottom: 10px; }
-          .info-section { margin: 20px 0; }
-          .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-          .info-label { font-weight: bold; color: #374151; }
-          .info-value { color: #1f2937; }
-          .section-title { background: #eff6ff; padding: 10px; font-weight: bold; color: #1e40af; margin: 20px 0 10px 0; border-left: 4px solid #2563eb; }
-          .total-row { background: #f3f4f6; padding: 12px; font-weight: bold; margin: 10px 0; }
-          .net-salary { background: #dbeafe; padding: 15px; text-align: center; font-size: 24px; color: #1e40af; margin: 20px 0; border-radius: 8px; }
-          .approval-section { margin-top: 40px; page-break-before: always; }
-          .approval-item { border: 2px solid #10b981; padding: 15px; margin: 15px 0; border-radius: 8px; }
-          .signature-img { max-width: 300px; height: auto; margin: 10px 0; border: 1px solid #d1d5db; }
-          .id-document-img { max-width: 400px; height: auto; margin: 10px 0; border: 1px solid #d1d5db; }
+          @page { size: landscape; margin: 15mm; }
+          body { font-family: Arial, sans-serif; background: white; font-size: 12px; }
+          .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
+          .header h1 { color: #1e40af; font-size: 24px; margin-bottom: 5px; }
+          
+          .top-info { display: flex; justify-content: space-between; margin-bottom: 20px; background: #eff6ff; padding: 10px; border-radius: 8px; border: 1px solid #bfdbfe; }
+          .top-info div { font-size: 14px; }
+          
+          .main-columns { display: flex; gap: 20px; margin-bottom: 20px; }
+          .column { flex: 1; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+          .section-title { background: #eff6ff; padding: 8px 12px; font-weight: bold; color: #1e40af; border-bottom: 1px solid #bfdbfe; font-size: 14px; }
+          
+          .info-row { display: flex; justify-content: space-between; padding: 6px 12px; border-bottom: 1px solid #f3f4f6; }
+          .info-row:last-child { border-bottom: none; }
+          .total-row { display: flex; justify-content: space-between; padding: 10px 12px; background: #f8fafc; font-weight: bold; font-size: 14px; border-top: 2px solid #e5e7eb; }
+          
+          .bottom-info { display: flex; gap: 20px; margin-bottom: 30px; }
+          .bottom-box { flex: 1; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; text-align: center; }
+          .bottom-box-title { font-size: 12px; color: #6b7280; font-weight: bold; margin-bottom: 5px; }
+          .bottom-box-value { font-size: 24px; font-weight: bold; color: #1e40af; }
+          
+          .signatures { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 40px; }
+          .sig-box { text-align: center; width: 40%; }
+          .sig-title { font-weight: bold; margin-bottom: 10px; font-size: 14px; color: #374151; }
+          .sig-name { margin-bottom: 40px; font-size: 14px; color: #4b5563; }
+          .sig-line { border-bottom: 1px solid #9ca3af; width: 100%; height: 1px; margin: 0 auto; }
+          
           @media print {
-            body { padding: 20px; }
+            body { padding: 0; }
             .no-print { display: none; }
           }
         </style>
       </head>
       <body>
         <div class="header">
-          <h1>BORDRO</h1>
+          <h1>BORDRO HESAP PUSULASI</h1>
           <p>${calculatedBordro.period}</p>
         </div>
 
-        <div class="info-section">
-          <h2 class="section-title">Personel Bilgileri</h2>
-          <div class="info-row">
-            <span class="info-label">Ad Soyad:</span>
-            <span class="info-value">${calculatedBordro.employeeName}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Sicil No:</span>
-            <span class="info-value">${calculatedBordro.sicilNo}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">DÃ¶nem:</span>
-            <span class="info-value">${calculatedBordro.period}</span>
-          </div>
+        <div class="top-info">
+          <div><strong>Personel Adı Soyadı:</strong> ${calculatedBordro.employeeName}</div>
+          <div><strong>Sicil No:</strong> ${calculatedBordro.sicilNo || '-'}</div>
+          <div><strong>Dönem:</strong> ${calculatedBordro.period}</div>
         </div>
 
-        <div class="info-section">
-          <h2 class="section-title">KazanÃ§lar</h2>
-          <div class="info-row">
-            <span class="info-label">Temel KazanÃ§:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.temelKazanc)} â‚º</span>
+        <div class="main-columns">
+          <div class="column">
+            <h2 class="section-title">KAZANÇLAR</h2>
+            <div class="info-row"><span>Temel Kazanç:</span> <span>${formatNumber(calculatedBordro.temelKazanc)} ₺</span></div>
+            ${calculatedBordro.yolParasi > 0 ? `<div class="info-row"><span>Yol Parası:</span> <span>${formatNumber(calculatedBordro.yolParasi)} ₺</span></div>` : ''}
+            ${calculatedBordro.gidaYardimi > 0 ? `<div class="info-row"><span>Gıda Yardımı:</span> <span>${formatNumber(calculatedBordro.gidaYardimi)} ₺</span></div>` : ''}
+            ${calculatedBordro.cocukYardimi > 0 ? `<div class="info-row"><span>Çocuk Yardımı:</span> <span>${formatNumber(calculatedBordro.cocukYardimi)} ₺</span></div>` : ''}
+            ${calculatedBordro.digerKazanclar > 0 ? `<div class="info-row"><span>Diğer Kazançlar:</span> <span>${formatNumber(calculatedBordro.digerKazanclar)} ₺</span></div>` : ''}
+            ${(calculatedBordro.fazlaMesaiTutar || 0) > 0 ? `<div class="info-row"><span>Fazla Mesai:</span> <span>${formatNumber(calculatedBordro.fazlaMesaiTutar || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.ikramiye || 0) > 0 ? `<div class="info-row"><span>İkramiye:</span> <span>${formatNumber(calculatedBordro.ikramiye || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.prim || 0) > 0 ? `<div class="info-row"><span>Prim:</span> <span>${formatNumber(calculatedBordro.prim || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.yillikIzinUcreti || 0) > 0 ? `<div class="info-row"><span>Yıllık İzin Ücreti:</span> <span>${formatNumber(calculatedBordro.yillikIzinUcreti || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.haftalikTatil || 0) > 0 ? `<div class="info-row"><span>Haftalık Tatil:</span> <span>${formatNumber(calculatedBordro.haftalikTatil || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.genelTatil || 0) > 0 ? `<div class="info-row"><span>Genel Tatil:</span> <span>${formatNumber(calculatedBordro.genelTatil || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.servisUcreti || 0) > 0 ? `<div class="info-row"><span>Servis Ücreti:</span> <span>${formatNumber(calculatedBordro.servisUcreti || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.temsilEtiket || 0) > 0 ? `<div class="info-row"><span>Temsil/Etiket:</span> <span>${formatNumber(calculatedBordro.temsilEtiket || 0)} ₺</span></div>` : ''}
+            
+            <div class="total-row">
+              <span style="color: #059669;">TOPLAM KAZANÇ</span>
+              <span style="color: #059669;">${formatNumber(calculatedBordro.toplamKazanc)} ₺</span>
+            </div>
           </div>
-          ${calculatedBordro.yolParasi > 0 ? `
-          <div class="info-row">
-            <span class="info-label">Yol ParasÄ±:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.yolParasi)} â‚º</span>
-          </div>
-          ` : ''}
-          ${calculatedBordro.gidaYardimi > 0 ? `
-          <div class="info-row">
-            <span class="info-label">GÄ±da YardÄ±mÄ±:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.gidaYardimi)} â‚º</span>
-          </div>
-          ` : ''}
-          <div class="total-row">
-            <div class="info-row" style="border: none;">
-              <span class="info-label">Toplam KazanÃ§:</span>
-              <span class="info-value" style="color: #059669; font-size: 18px;">${formatNumber(calculatedBordro.toplamKazanc)} â‚º</span>
+          
+          <div class="column">
+            <h2 class="section-title">KESİNTİLER</h2>
+            <div class="info-row"><span>Gelir Vergisi:</span> <span>${formatNumber(calculatedBordro.gelirVergisi)} ₺</span></div>
+            <div class="info-row"><span>Damga Vergisi:</span> <span>${formatNumber(calculatedBordro.damgaVergisi)} ₺</span></div>
+            <div class="info-row"><span>SGK İşçi Payı:</span> <span>${formatNumber(calculatedBordro.sgkIsciPayi)} ₺</span></div>
+            <div class="info-row"><span>İşsizlik Sigortası:</span> <span>${formatNumber(calculatedBordro.issizlikSigortasi)} ₺</span></div>
+            ${(calculatedBordro.avans || 0) > 0 ? `<div class="info-row"><span>Avans:</span> <span>${formatNumber(calculatedBordro.avans || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.sendikaidat || 0) > 0 ? `<div class="info-row"><span>Sendika Aidatı:</span> <span>${formatNumber(calculatedBordro.sendikaidat || 0)} ₺</span></div>` : ''}
+            ${(calculatedBordro.digerKesintiler || 0) > 0 ? `<div class="info-row"><span>Diğer Kesintiler:</span> <span>${formatNumber(calculatedBordro.digerKesintiler || 0)} ₺</span></div>` : ''}
+            
+            <div class="total-row">
+              <span style="color: #dc2626;">TOPLAM KESİNTİ</span>
+              <span style="color: #dc2626;">${formatNumber(calculatedBordro.toplamKesinti)} ₺</span>
             </div>
           </div>
         </div>
 
-        <div class="info-section">
-          <h2 class="section-title">Kesintiler</h2>
-          <div class="info-row">
-            <span class="info-label">Gelir Vergisi:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.gelirVergisi)} â‚º</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Damga Vergisi:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.damgaVergisi)} â‚º</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">SGK Ä°ÅŸÃ§i PayÄ±:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.sgkIsciPayi)} â‚º</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Ä°ÅŸsizlik SigortasÄ±:</span>
-            <span class="info-value">${formatNumber(calculatedBordro.issizlikSigortasi)} â‚º</span>
-          </div>
-          <div class="total-row">
-            <div class="info-row" style="border: none;">
-              <span class="info-label">Toplam Kesinti:</span>
-              <span class="info-value" style="color: #dc2626; font-size: 18px;">${formatNumber(calculatedBordro.toplamKesinti)} â‚º</span>
+        <div class="bottom-info">
+          <div class="bottom-box" style="background: #f8fafc;">
+            <div class="bottom-box-title">SGK İŞVEREN PAYLARI (Toplam)</div>
+            <div class="bottom-box-value" style="font-size: 18px; color: #4b5563;">
+              ${formatNumber(calculatedBordro.sgkIsverenPayi + calculatedBordro.issizlikIsverenPayi)} ₺
             </div>
           </div>
-        </div>
-
-        <div class="net-salary">
-          <div>NET MAAÅž</div>
-          <div style="font-size: 32px; margin-top: 10px;">${formatNumber(calculatedBordro.netMaas)} â‚º</div>
+          <div class="bottom-box" style="background: #dbeafe; border-color: #93c5fd;">
+            <div class="bottom-box-title">NET MAAŞ</div>
+            <div class="bottom-box-value">${formatNumber(calculatedBordro.netMaas)} ₺</div>
+          </div>
         </div>
 
         ${(approvalData && approvalData.length > 0) ? `
-        <div class="approval-section">
-          <h2 class="section-title">Onay KayÄ±tlarÄ±</h2>
-          ${approvalData.map((approval: any, index: number) => `
-            <div class="approval-item">
-              <div class="info-row" style="border: none;">
-                <span class="info-label">Ã‡alÄ±ÅŸan:</span>
-                <span class="info-value">${approval.employee_name}</span>
-              </div>
-              <div class="info-row" style="border: none;">
-                <span class="info-label">Onay Durumu:</span>
-                <span class="info-value" style="color: ${approval.approval_status === 'onaylandi' ? '#059669' : '#dc2626'}">
-                  ${approval.approval_status === 'onaylandi' ? 'OnaylandÄ±' : 'Reddedildi'}
-                </span>
-              </div>
-              <div class="info-row" style="border: none;">
-                <span class="info-label">Tarih:</span>
-                <span class="info-value">${new Date(approval.timestamp).toLocaleString('tr-TR')}</span>
-              </div>
-              <div class="info-row" style="border: none;">
-                <span class="info-label">DoÄŸrulama YÃ¶ntemi:</span>
-                <span class="info-value">
-                  ${approval.verification_method === 'signature' ? 'Dijital Ä°mza' :
-                    approval.verification_method === 'id_document' ? 'Kimlik Belgesi' : 'Onay Åžifresi'}
-                </span>
-              </div>
-              ${approval.signature_data ? `
-                <div style="margin-top: 10px;">
-                  <strong>Dijital Ä°mza:</strong><br>
-                  <img src="${approval.signature_data}" class="signature-img" alt="Ä°mza" />
-                </div>
-              ` : ''}
-              ${approval.id_document_data ? `
-                <div style="margin-top: 10px;">
-                  <strong>Kimlik Belgesi:</strong><br>
-                  <img src="${approval.id_document_data}" class="id_document-img" alt="Kimlik" />
-                </div>
-              ` : ''}
+        <div style="margin-top: 20px;">
+          <h2 class="section-title" style="border-radius: 8px;">ONAY BİLGİLERİ</h2>
+          ${approvalData.map((approval: any) => `
+            <div style="padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 10px; display: flex; gap: 20px;">
+              <div><strong>Durum:</strong> ${approval.approval_status === 'onaylandi' ? 'Onaylandı' : 'Reddedildi'}</div>
+              <div><strong>Tarih:</strong> ${new Date(approval.timestamp).toLocaleString('tr-TR')}</div>
+              <div><strong>Yöntem:</strong> ${approval.verification_method}</div>
             </div>
           `).join('')}
         </div>
         ` : ''}
 
-        <div style="margin-top: 40px; text-align: center; color: #6b7280; font-size: 12px;">
-          <p>Bu bordro ${new Date().toLocaleDateString('tr-TR')} tarihinde oluÅŸturulmuÅŸtur.</p>
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-title">Hazırlayan / İşveren Vekili</div>
+            <div class="sig-name">&nbsp;</div>
+            <div class="sig-line"></div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Personel</div>
+            <div class="sig-name">${calculatedBordro.employeeName}</div>
+            <div class="sig-line"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; text-align: center; color: #9ca3af; font-size: 10px;">
+          <p>Bu bordro ${new Date().toLocaleDateString('tr-TR')} tarihinde elektronik ortamda oluşturulmuştur.</p>
         </div>
       </body>
       </html>
