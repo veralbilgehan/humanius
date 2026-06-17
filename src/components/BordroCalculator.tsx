@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, Save, FileText, Download, User, DollarSign, CheckCircle, Send } from 'lucide-react';
+import { Calculator, Save, FileText, Download, User, DollarSign, CheckCircle } from 'lucide-react';
 import { BordroItem } from '../types/bordro';
 import { calculateBordro, formatCurrency, formatNumber } from '../utils/bordroCalculations';
 import { Employee } from '../types';
@@ -66,7 +66,7 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
     }
   }, [selectedEmployee, period]);
 
-  // Ã–nceki aylarÄ±n kÃ¼mÃ¼latif GV matrahÄ±nÄ± DB'den yÃ¼kle
+  // Önceki ayların kümülatif GV matrahını DB'den yükle
   useEffect(() => {
     if (!selectedEmployee?.id || !period) return;
     const [year, month] = period.split('-').map(Number);
@@ -74,18 +74,18 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
 
     bordroService.getByEmployee(selectedEmployee.id).then((rows) => {
       if (!rows) return;
-      // AynÄ± yÄ±ldaki, bu aydan Ã¶nceki tÃ¼m bordrolar
+      // Aynı yıldaki, bu aydan önceki tüm bordrolar
       const oncekiAylar = rows.filter((r: any) => {
         const [rYear, rMonth] = (r.period ?? '').split('-').map(Number);
         return rYear === year && rMonth < month;
       });
-      // En gÃ¼ncel ayÄ±n kÃ¼mÃ¼latif matrahi = o aya kadar toplam
-      // EÄŸer kayÄ±t varsa en bÃ¼yÃ¼k ay numarasÄ±nÄ±n kumulatif_vergi_matrahi deÄŸerini al
+      // En güncel ayın kümülatif matrahi = o aya kadar toplam
+      // Eğer kayıt varsa en büyük ay numarasının kumulatif_vergi_matrahi değerini al
       if (oncekiAylar.length === 0) {
         setOncekiAylarGVMatrahi(0);
         return;
       }
-      // En son Ã¶nceki ayÄ± bul
+      // En son önceki ayı bul
       const enSonAy = oncekiAylar.sort((a: any, b: any) => {
         const [, am] = (a.period ?? '').split('-').map(Number);
         const [, bm] = (b.period ?? '').split('-').map(Number);
@@ -192,12 +192,12 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
       } as BordroItem;
 
       setSavedBordro(uiBordro);
-      setSaveMessage('Bordro baÅŸarÄ±yla kaydedildi.');
+      setSaveMessage('Bordro başarıyla kaydedildi.');
       onSaveBordro(uiBordro);
     } catch (error: any) {
-      console.error('Bordro kaydetme hatasÄ±:', error);
+      console.error('Bordro kaydetme hatası:', error);
 
-      // VeritabanÄ± hatasÄ± olsa bile kullanÄ±cÄ± akÄ±ÅŸÄ±nÄ± kesmeyelim; yerelde devam et.
+      // Veritabanı hatası olsa bile kullanıcı akışını kesmeyelim; yerelde devam et.
       const localBordro = {
         ...calculatedBordro,
         id: calculatedBordro.id || crypto.randomUUID(),
@@ -219,8 +219,8 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
       setSaveError(null);
       setSaveMessage(
         isPermissionLikeError
-          ? 'Bordro veritabanÄ±na kaydedilemedi (yetki kÄ±sÄ±tÄ±). KayÄ±t yerel olarak tamamlandÄ±.'
-          : 'Bordro veritabanÄ±na kaydedilemedi. KayÄ±t yerel olarak tamamlandÄ±.'
+          ? 'Bordro veritabanına kaydedilemedi (yetki kısıtı). Kayıt yerel olarak tamamlandı.'
+          : 'Bordro veritabanına kaydedilemedi. Kayıt yerel olarak tamamlandı.'
       );
     }
   };
@@ -391,6 +391,15 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
           <h2 className="text-xl font-bold text-gray-800">{t('bordro.calculator')}</h2>
         </div>
         <div className="flex items-center gap-2">
+          {onSendForApproval && savedBordro && (
+            <button
+              onClick={() => onSendForApproval(savedBordro)}
+              className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-xl font-bold hover:bg-yellow-600 transition-colors"
+            >
+              <User className="w-4 h-4" />
+              Onaya Gönder
+            </button>
+          )}
           <button
             onClick={handleSave}
             disabled={!calculatedBordro}
@@ -399,15 +408,6 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
             <Save className="w-4 h-4" />
             {t('common.save')}
           </button>
-          {savedBordro && onSendForApproval && (
-            <button
-              onClick={() => onSendForApproval(savedBordro)}
-              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-green-700 transition-colors"
-            >
-              <Send className="w-4 h-4" />
-              Onaya GÃ¶nder
-            </button>
-          )}
           <button
             onClick={exportToPDF}
             disabled={!calculatedBordro}
@@ -422,14 +422,14 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
       {(saveMessage || saveError) && (
         <div className="px-6 pt-4">
           <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-            {saveMessage ?? 'Ä°ÅŸlem tamamlandÄ±. Yerel kayÄ±t modu devrede olabilir.'}
+            {saveMessage ?? 'İşlem tamamlandı. Yerel kayıt modu devrede olabilir.'}
           </div>
         </div>
       )}
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Sol Panel - GiriÅŸ Formu */}
+          {/* Sol Panel - Giriş Formu */}
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -699,7 +699,7 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
               </div>
             </div>
 
-          {/* SaÄŸ Panel - Bordro Ã–nizleme */}
+          {/* Sağ Panel - Bordro Önizleme */}
           <div className="space-y-6">
             {(savedBordro || calculatedBordro) && (() => {
               const displayBordro = savedBordro || calculatedBordro!;
@@ -726,89 +726,89 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
                     </div>
                   </div>
 
-                  {/* KazanÃ§lar */}
+                  {/* Kazançlar */}
                   <div className="border-b border-gray-200 pb-4">
                     <h4 className="text-sm font-medium text-gray-500 mb-3">{t('bordro.earnings')}</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.baseSalary')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.temelKazanc)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.temelKazanc)} ₺</span>
                       </div>
                       {displayBordro.yolParasi > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.transportAllowance')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.yolParasi)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.yolParasi)} ₺</span>
                         </div>
                       )}
                       {displayBordro.gidaYardimi > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.foodAllowance')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.gidaYardimi)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.gidaYardimi)} ₺</span>
                         </div>
                       )}
                       {displayBordro.cocukYardimi > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.childAllowance')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.cocukYardimi)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.cocukYardimi)} ₺</span>
                         </div>
                       )}
                       {displayBordro.digerKazanclar > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.otherEarnings')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.digerKazanclar)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.digerKazanclar)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.fazlaMesaiTutar || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.overtime')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.fazlaMesaiTutar || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.fazlaMesaiTutar || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.fazlaMesaiSaat50 || 0) > 0 && (
                         <div className="flex justify-between text-xs text-gray-400 pl-4">
-                          <span>  â€¢ %50 Zam ({displayBordro.fazlaMesaiSaat50} saat)</span>
-                          <span>{formatNumber((displayBordro.temelKazanc / 225) * 1.5 * (displayBordro.fazlaMesaiSaat50 || 0))} â‚º</span>
+                          <span>  • %50 Zam ({displayBordro.fazlaMesaiSaat50} saat)</span>
+                          <span>{formatNumber((displayBordro.temelKazanc / 225) * 1.5 * (displayBordro.fazlaMesaiSaat50 || 0))} ₺</span>
                         </div>
                       )}
                       {(displayBordro.fazlaMesaiSaat100 || 0) > 0 && (
                         <div className="flex justify-between text-xs text-gray-400 pl-4">
-                          <span>  â€¢ %100 Zam ({displayBordro.fazlaMesaiSaat100} saat)</span>
-                          <span>{formatNumber((displayBordro.temelKazanc / 225) * 2 * (displayBordro.fazlaMesaiSaat100 || 0))} â‚º</span>
+                          <span>  • %100 Zam ({displayBordro.fazlaMesaiSaat100} saat)</span>
+                          <span>{formatNumber((displayBordro.temelKazanc / 225) * 2 * (displayBordro.fazlaMesaiSaat100 || 0))} ₺</span>
                         </div>
                       )}
                       {(displayBordro.ikramiye || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.bonus')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.ikramiye || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.ikramiye || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.prim || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.premium')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.prim || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.prim || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.yillikIzinUcreti || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.annualLeaveWage')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.yillikIzinUcreti || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.yillikIzinUcreti || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.haftalikTatil || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.weeklyHoliday')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.haftalikTatil || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.haftalikTatil || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.genelTatil || 0) > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.publicHoliday')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.genelTatil || 0)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.genelTatil || 0)} ₺</span>
                         </div>
                       )}
                       <div className="flex justify-between font-semibold border-t border-gray-200 pt-2">
                         <span className="text-green-600">{t('bordro.totalEarnings')}</span>
-                        <span className="text-green-600">{formatNumber(displayBordro.toplamKazanc)} â‚º</span>
+                        <span className="text-green-600">{formatNumber(displayBordro.toplamKazanc)} ₺</span>
                       </div>
                     </div>
                   </div>
@@ -819,90 +819,90 @@ const BordroCalculator: React.FC<BordroCalculatorProps> = ({ employees, onSaveBo
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.incomeTax')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.gelirVergisi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.gelirVergisi)} ₺</span>
                       </div>
                       {(displayBordro.engelliIndirimi || 0) > 0 && (
                         <div className="flex justify-between text-green-600">
                           <span>{t('bordro.disabilityReduction')}</span>
-                          <span>-{formatNumber(displayBordro.engelliIndirimi || 0)} â‚º</span>
+                          <span>-{formatNumber(displayBordro.engelliIndirimi || 0)} ₺</span>
                         </div>
                       )}
                       {(displayBordro.asgariUcretGelirVergisiIstisnasi || 0) > 0 && (
                         <div className="flex justify-between text-green-600 border-t border-green-200 pt-1 mt-1">
                           <span className="text-xs">{t('bordro.minWageIncomeTaxExemption')}</span>
-                          <span className="text-xs">-{formatNumber(displayBordro.asgariUcretGelirVergisiIstisnasi || 0)} â‚º</span>
+                          <span className="text-xs">-{formatNumber(displayBordro.asgariUcretGelirVergisiIstisnasi || 0)} ₺</span>
                         </div>
                       )}
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.stampTax')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.damgaVergisi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.damgaVergisi)} ₺</span>
                       </div>
                       {(displayBordro.asgariUcretDamgaVergisiIstisnasi || 0) > 0 && (
                         <div className="flex justify-between text-green-600">
                           <span className="text-xs">{t('bordro.minWageStampTaxExemption')}</span>
-                          <span className="text-xs">-{formatNumber(displayBordro.asgariUcretDamgaVergisiIstisnasi || 0)} â‚º</span>
+                          <span className="text-xs">-{formatNumber(displayBordro.asgariUcretDamgaVergisiIstisnasi || 0)} ₺</span>
                         </div>
                       )}
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.sgkEmployee')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.sgkIsciPayi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.sgkIsciPayi)} ₺</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.unemploymentInsurance')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.issizlikSigortasi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.issizlikSigortasi)} ₺</span>
                       </div>
                       {displayBordro.avans > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.advance')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.avans)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.avans)} ₺</span>
                         </div>
                       )}
                       {displayBordro.sendikaidat > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.unionDues')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.sendikaidat)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.sendikaidat)} ₺</span>
                         </div>
                       )}
                       {displayBordro.digerKesintiler > 0 && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t('bordro.otherDeduction')}</span>
-                          <span className="text-gray-800">{formatNumber(displayBordro.digerKesintiler)} â‚º</span>
+                          <span className="text-gray-800">{formatNumber(displayBordro.digerKesintiler)} ₺</span>
                         </div>
                       )}
                       <div className="flex justify-between font-semibold border-t border-gray-200 pt-2">
                         <span className="text-red-600">{t('bordro.totalDeduction')}</span>
-                        <span className="text-red-600">{formatNumber(displayBordro.toplamKesinti)} â‚º</span>
+                        <span className="text-red-600">{formatNumber(displayBordro.toplamKesinti)} ₺</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Net MaaÅŸ */}
+                  {/* Net Maaş */}
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-blue-700">{t('bordro.netSalary').toUpperCase()}</span>
                       <span className="text-2xl font-bold text-blue-700">
-                        {formatNumber(displayBordro.netMaas)} â‚º
+                        {formatNumber(displayBordro.netMaas)} ₺
                       </span>
                     </div>
                   </div>
 
-                  {/* Ä°ÅŸveren PaylarÄ± */}
+                  {/* İşveren Payları */}
                   <div className="border-t border-gray-200 pt-4">
                     <h4 className="text-sm font-medium text-gray-500 mb-3">{t('bordro.employerShares')}</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.sgkEmployer')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.sgkIsverenPayi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.sgkIsverenPayi)} ₺</span>
                       </div>
                       {(displayBordro.sgkIsverenIndirimi || 0) > 0 && (
                         <div className="flex justify-between text-blue-600">
                           <span className="text-xs">{t('bordro.sgkEmployerDiscount')} ({displayBordro.sgkIsverenIndirimOrani}%)</span>
-                          <span className="text-xs">-{formatNumber(displayBordro.sgkIsverenIndirimi || 0)} â‚º</span>
+                          <span className="text-xs">-{formatNumber(displayBordro.sgkIsverenIndirimi || 0)} ₺</span>
                         </div>
                       )}
                       <div className="flex justify-between">
                         <span className="text-gray-500">{t('bordro.unemploymentEmployer')}</span>
-                        <span className="text-gray-800">{formatNumber(displayBordro.issizlikIsverenPayi)} â‚º</span>
+                        <span className="text-gray-800">{formatNumber(displayBordro.issizlikIsverenPayi)} ₺</span>
                       </div>
                     </div>
                   </div>
