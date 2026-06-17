@@ -111,6 +111,7 @@ export default function BordroMain({
             <BordroCalculator
               employees={employees}
               onSaveBordro={onSaveBordro}
+              onSendForApproval={onSendForApproval}
               selectedEmployee={selectedEmployee}
               period={period}
             />
