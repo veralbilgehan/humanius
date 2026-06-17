@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, FileText, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { X, FileText, CheckCircle, XCircle, Clock, Send } from 'lucide-react';
 import { BordroItem } from '../types/bordro';
 import { formatNumber } from '../utils/bordroCalculations';
 import BordroOnay from './BordroOnay';
@@ -12,6 +12,7 @@ interface BordroViewModalProps {
   onClose: () => void;
   onApprovalComplete?: () => void;
   isEmployeeView?: boolean;
+  onSendForApproval?: (bordro: BordroItem) => void;
 }
 
 const BordroViewModal: React.FC<BordroViewModalProps> = ({
@@ -20,7 +21,8 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
   employeeName,
   onClose,
   onApprovalComplete,
-  isEmployeeView = false
+  isEmployeeView = false,
+  onSendForApproval
 }) => {
   const [approvalStatus, setApprovalStatus] = useState<'beklemede' | 'onaylandi' | 'reddedildi' | 'taslak'>('taslak');
   const [approvalDetails, setApprovalDetails] = useState<any>(null);
@@ -364,6 +366,21 @@ const BordroViewModal: React.FC<BordroViewModalProps> = ({
               <Clock className="w-6 h-6 text-yellow-600 mx-auto mb-2" />
               <h3 className="text-sm font-semibold text-yellow-800">Personel Onayı Bekleniyor</h3>
               <p className="text-xs text-yellow-700 mt-1">Bu bordro personelin onayına gönderilmiştir. Personel onayladıktan sonra durumu güncellenecektir.</p>
+            </div>
+          )}
+
+          {approvalStatus === 'taslak' && !loading && !isEmployeeView && onSendForApproval && (
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  onSendForApproval(bordro);
+                  onClose();
+                }}
+                className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+              >
+                <Send className="w-5 h-5" />
+                Personelin Onayına Gönder
+              </button>
             </div>
           )}
         </div>

@@ -1174,6 +1174,7 @@ const AppInner: React.FC = () => {
           onClose={() => setSelectedBordro(null)}
           onApprovalComplete={loadData}
           isEmployeeView={['employee', 'user'].includes(effectiveAppRole)}
+          onSendForApproval={handleSendBordroForApproval}
         />
       )}
     </div>
